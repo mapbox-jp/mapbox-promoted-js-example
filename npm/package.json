@@ -23,7 +23,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "mapbox-gl": "1.13.0",
-    "mapbox-promoted-js": "github:mapbox/mapbox-promoted-js#67b645d2d6634794921236df52612ff894ae0438",
+    "mapbox-promoted-js": "file:./mapbox-promoted-js-0.3.3.tar.gz",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
@@ -37,7 +37,7 @@
     "@svgr/webpack": "^5.5.0",
     "@types/axios": "^0.14.0",
     "@types/mapbox-gl": "^2.3.3",
-    "@types/mapbox-promoted-js": "github:mapbox/mapbox-promoted-js#67b645d2d6634794921236df52612ff894ae0438",
+    "@types/mapbox-promoted-js": "file:./mapbox-promoted-js-0.3.3.tar.gz",
     "@types/react": "^17.0.8",
     "@types/react-dom": "^17.0.5",
     "@types/react-router-dom": "^5.1.7",
