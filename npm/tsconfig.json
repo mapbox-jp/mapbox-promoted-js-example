@@ -13,6 +13,10 @@
     "jsx": "react",
     "moduleResolution": "node",
     "typeRoots": ["src/@types", "node_modules/@types"],
+    "paths": {
+      "app/*":   ["./src/app/*"],
+      "utils/*": ["./src/utils/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,

@@ -29,34 +29,34 @@ module.exports = {
     publicPath: process.env.PUBLIC_PATH || './',
   },
   optimization: {
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          parse: {
-            ecma: 8
-          },
-          compress: {
-            ecma: 5,
-            warnings: false,
-            comparisons: false,
-            drop_console: false
-          },
-          mangle: {
-            safari10: true
-          },
-          output: {
-            ecma: 5,
-            comments: false,
-            ascii_only: true
-          }
-        },
-        parallel: true
-      })
-    ]
+    // minimizer: [
+    //   new TerserPlugin({
+    //     terserOptions: {
+    //       parse: {
+    //         ecma: 8
+    //       },
+    //       compress: {
+    //         ecma: 5,
+    //         warnings: false,
+    //         comparisons: false,
+    //         drop_console: false
+    //       },
+    //       mangle: {
+    //         safari10: true
+    //       },
+    //       output: {
+    //         ecma: 5,
+    //         comments: false,
+    //         ascii_only: true
+    //       }
+    //     },
+    //     parallel: true
+    //   })
+    // ]
   },
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.svg'],
     plugins: [
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
       new TsconfigPathsPlugin({ configFile: paths.appTsConfig }),

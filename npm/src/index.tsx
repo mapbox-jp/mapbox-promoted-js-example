@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 // Global style
-import GlobalStyle from './GlobalStyle';
+import GlobalStyle from './app/GlobalStyle';
 // Components
-import App from './App';
+import App from './app/Map';
 
 const history = createBrowserHistory();
 
