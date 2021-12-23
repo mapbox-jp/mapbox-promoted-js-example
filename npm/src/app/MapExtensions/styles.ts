@@ -23,13 +23,13 @@ export const SwitchIcon = styled.div`
   bottom: 0;
   cursor: pointer;
   transform: ${({ isOpening }: SwitchIcon) => isOpening ? 'rotate(0deg)' : 'rotate(180deg)'};
-  transition: top 0.2s, transform 0.2s;
+  transition: top 0.1s, transform 0.1s;
 `;
 export const MenuWrapper = styled.div`
   padding: ${({ isOpening }: Menu) => isOpening ? '10px 10px 28px 10px ' : '0'};
   width: ${({ isOpening }: Menu) => isOpening ? '350px' : '0'};
   height: ${({ isOpening, height }: Menu) => isOpening ? height : '0'};
-  transition: padding 0.2s, width 0.2s, height 0.2s;
+  transition: padding 0.1s, width 0.1s, height 0.1s;
   overflow: hidden;
   white-space: nowrap;
 `;
@@ -41,7 +41,7 @@ export const MenuItem = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 30px;
+  min-height: 28px;
 `;
 export const ItemLabel = styled.div`
   margin-right: 10px;
@@ -63,7 +63,7 @@ export const Select = styled.select`
   border: 1px solid #dddddd;
   white-space: nowrap;
   user-select: none;
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   border-radius: 5px;
   cursor: pointer;
   outline: 0;

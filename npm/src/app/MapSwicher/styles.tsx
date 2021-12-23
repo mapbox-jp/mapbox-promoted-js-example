@@ -19,14 +19,14 @@ export const SwitchIcon = styled.div`
   padding: 8px;
   cursor: pointer;
   transform: ${({ isOpening }: SwitchIcon) => isOpening ? 'rotate(180deg)' : 'rotate(0deg)'};
-  transition: transform 0.2s;
+  transition: transform 0.1s;
 `;
 export const Menu = styled.div`
   display: flex;
   justify-content: center;
   padding: ${({ isOpening }: Menu) => isOpening ? '0 10px 0 0;' : '0'};
   width: ${({ isOpening }: Menu) => isOpening ? '270px' : '0'};
-  transition: padding 0.2s, width 0.2s;
+  transition: padding 0.1s, width 0.1s;
   overflow: hidden;
   white-space: nowrap;
 `;

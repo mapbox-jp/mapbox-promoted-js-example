@@ -5,7 +5,11 @@ import { Feature, Promoted as MapboxPromoted } from 'mapbox-promoted-js';
 import Icon, { ICON_TYPE } from 'app/Icon';
 import Radio from 'app/Radio';
 import FeatureProperties from 'app/FeatureProperties';
+import FeatureExtentions from 'app/FeatureExtentions';
 import { Container, SwitchIcon, MenuWrapper, Menu, MenuItem, ItemLabel, ItemValue, Select, Option } from './styles';
+
+const IMPRESSION_NO = 5;
+const CLICK_NO = 6;
 
 const PROMOTION_TYPES = {
   DEFAULT: 'default',
@@ -34,12 +38,14 @@ export class MapExtensionsController implements MapboxGL.IControl {
 type Props = {
   map: MapboxGL.Map;
   promoted: MapboxPromoted;
+  onDebug: (value: boolean) => void;
 };
 
 const MapExtensions: React.FC<Props> = props => {
-  const { map, promoted } = props;
+  const { map, promoted, onDebug} = props;
 
   const ref = useRef<HTMLDivElement>(null);
+  const analitics = useRef<any>({});
 
   const [isOpening, setIsOpening] = useState(false);
   const [isShowingFeatureProperties, setIsShowingFeatureProperties] = useState(false);
@@ -51,6 +57,9 @@ const MapExtensions: React.FC<Props> = props => {
   };
   const handleToggleShowingFeatureProperties = (value: boolean) => {
     setIsShowingFeatureProperties(value);
+  };
+  const handleToggleDebugging = (value: boolean) => {
+    onDebug(value);
   };
   const handleSelectPromotionType = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (!promoted) { return; }
@@ -67,12 +76,26 @@ const MapExtensions: React.FC<Props> = props => {
       promoted.enablePromotionSideCard = true;
     }
   };
+  const handleLoadAnalitics = (value: any) => {
+    analitics.current = value;
+  };
 
   useEffect(() => {
     promoted.on('click_pin', (_type: any, event: any) => {
+      const feature = event.feature;
+      const adid = feature.properties.adid;
+      const row = analitics.current[adid];
+      if (row) {
+        const impression = row[IMPRESSION_NO];
+        const click = row[CLICK_NO];
+        feature.properties['analitics'] = {
+          impression,
+          click,
+        };
+      }
       setClickedFeature(event.feature);
     });
-  });
+  }, []);
   useEffect(() => {
     if (ref.current) {
       setMenuHeight(ref.current.clientHeight + 38);
@@ -86,6 +109,12 @@ const MapExtensions: React.FC<Props> = props => {
       </SwitchIcon>
       <MenuWrapper isOpening={isOpening} height={`${menuHeight}px`}>
         <Menu ref={ref} id='menu'>
+          <MenuItem>
+            <ItemLabel>Display Debug Params:</ItemLabel>
+            <ItemValue>
+              <Radio onChange={handleToggleDebugging} />
+            </ItemValue>
+          </MenuItem>          
           <MenuItem>
             <ItemLabel>Promotion Style:</ItemLabel>
             <ItemValue>
@@ -105,6 +134,14 @@ const MapExtensions: React.FC<Props> = props => {
           </MenuItem>
           {isShowingFeatureProperties && (
             <MenuItem>
+              <ItemLabel>Feature Property Extensions:</ItemLabel>
+              <ItemValue>
+                <FeatureExtentions onLoad={handleLoadAnalitics} />
+              </ItemValue>
+            </MenuItem>
+          )}          
+          {isShowingFeatureProperties && (
+            <MenuItem>
               <ItemLabel>Feature Properties:</ItemLabel>
             </MenuItem>
           )}
@@ -119,9 +156,9 @@ const MapExtensions: React.FC<Props> = props => {
   );
 };
 
-export const renderMapExtensions = (map: MapboxGL.Map, promoted: MapboxPromoted) => {
+export const renderMapExtensions = (map: MapboxGL.Map, promoted: MapboxPromoted, onDebug: (value: boolean) => void) => {
   ReactDOM.render(
-    <MapExtensions map={map} promoted={promoted} />,
+    <MapExtensions map={map} promoted={promoted} onDebug={onDebug} />,
     document.getElementById('map-extensions')
   );
 };

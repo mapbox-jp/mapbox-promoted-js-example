@@ -4,15 +4,45 @@ import { Promoted as MapboxPromoted } from 'mapbox-promoted-js';
 import { MapTypeController, renderMapSwicher } from 'app/MapSwicher';
 import { MapExtensionsController, renderMapExtensions } from 'app/MapExtensions';
 import { INITIAL_MAP_STATE, STYLES } from 'utils/params';
-import { Container } from './styles';
+import { Container, Debug, Item, ItemLabel, ItemValue } from './styles';
 
 MapboxGL.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 (MapboxGL as unknown as { workerClass: string }).workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
+type DebugParams = {
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  zoom: number;
+  points: {
+    x: number;
+    y: number;
+  };
+};
+
+let debugParams: DebugParams = {
+  coordinates: {
+    lat: 0,
+    lng: 0,
+  },
+  zoom: 0,
+  points: {
+    x: 0,
+    y: 0,
+  },
+};
 
 const App: React.FC = () => {
   const mapRef = useRef(null);
   const [_promoted, setPromoted] = useState<MapboxPromoted>();
   const [_map, setMap] = useState<mapboxgl.Map>();
+  const [isDebugging, setIsDebugging] = useState(false);
+  const [_date, setDate] = useState(new Date());
+
+  const handleToggleDebugging = (value: boolean) => {
+    setIsDebugging(value);
+  };
 
   useEffect(() => {
     const { lng, lat, zoom } = INITIAL_MAP_STATE;
@@ -34,25 +64,21 @@ const App: React.FC = () => {
       }
     );
 
-    promoted.on('load', (type: any, event: any) => console.log(type, event));
-    promoted.on('move', (type: any, event: any) => console.log(type, event));
-    promoted.on('click_pin', (type: any, event: any) => console.log(type, event));
-    
-    promoted.on('click_side_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('show_side_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('close_side_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('update_side_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('hide_side_card', (type: any, event: any) => console.log(type, event));
-
-    promoted.on('click_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('show_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('update_card', (type: any, event: any) => console.log(type, event));
-    promoted.on('close_card', (type: any, event: any) => console.log(type, event));
-
-    promoted.on('click_popup', (type: any, event: any) => console.log(type, event));
-    promoted.on('show_popup', (type: any, event: any) => console.log(type, event));
-    promoted.on('close_popup', (type: any, event: any) => console.log(type, event));
-
+    map.on('mousemove', (event: any) => {
+      debugParams = {
+        coordinates: event.lngLat,
+        zoom: map.getZoom(),
+        points: event.point,
+      };
+      setDate(new Date());
+    });
+    map.on('move', (_event: any) => {
+      debugParams = {
+        ...debugParams,
+        zoom: map.getZoom(),
+      };
+      setDate(new Date());
+    });
     map.on('load', () => {
       map.addControl(new MapboxGL.NavigationControl({
         visualizePitch: true,
@@ -66,7 +92,7 @@ const App: React.FC = () => {
       map.addControl(new MapTypeController());    
       map.addControl(new MapExtensionsController());    
       renderMapSwicher(map);
-      renderMapExtensions(map, promoted);
+      renderMapExtensions(map, promoted, handleToggleDebugging);
     });
     setMap(map);
     setPromoted(promoted);
@@ -74,7 +100,33 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Container ref={mapRef} />
+    <>
+      <Container ref={mapRef} />
+      {isDebugging && debugParams && (
+        <Debug>
+          <Item>
+            <ItemLabel>Lng:</ItemLabel>
+            <ItemValue>{debugParams.coordinates.lng}</ItemValue>
+          </Item>
+          <Item>
+            <ItemLabel>Lat:</ItemLabel>
+            <ItemValue>{debugParams.coordinates.lat}</ItemValue>
+          </Item>
+          <Item>
+            <ItemLabel>Zoom:</ItemLabel>
+            <ItemValue>{debugParams.zoom}</ItemValue>
+          </Item>
+          <Item>
+            <ItemLabel>X:</ItemLabel>
+            <ItemValue>{debugParams.points.x}</ItemValue>
+          </Item>
+          <Item>
+            <ItemLabel>Y:</ItemLabel>
+            <ItemValue>{debugParams.points.y}</ItemValue>
+          </Item>
+        </Debug>
+      )}
+    </>
   );
 };
 
