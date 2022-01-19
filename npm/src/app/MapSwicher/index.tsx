@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import MapboxGL from 'mapbox-gl';
+import { Promoted as MapboxPromoted } from 'mapbox-promoted-js';
 import Icon, { ICON_TYPE } from 'app/Icon';
 import {
   INITIAL_MAP_STATE,
@@ -28,10 +29,12 @@ export class MapTypeController implements MapboxGL.IControl {
 
 type Props = {
   map: MapboxGL.Map;
+  promoted: MapboxPromoted;
+  onChange: () => void;
 };
 
 const MapSwicher: React.FC<Props> = props => {
-  const { map } = props;
+  const { map, promoted, onChange } = props;
 
   const [isOpening, setIsOpening] = useState(false);
   const [isPitched, setIsPitched] = useState(false);
@@ -55,27 +58,37 @@ const MapSwicher: React.FC<Props> = props => {
   };
   const handleToggleDark = () => {
     if (isDark) {
+      promoted.reload();
+      onChange();
       map.setStyle(STYLES.STREET);
       setIsDark(false);
+      setIsSatellite(false);
     } else {
+      promoted.reload();
+      onChange();
       map.setStyle(STYLES.DARK);
       setIsDark(true);
+      setIsSatellite(false);
     }
   };
   const handleToggleSatellite = () => {
     if (!map) { return; }
     if (isSatellite) {
+      promoted.reload();
+      onChange();
       map.setStyle(STYLES.STREET);
       setIsTerrain(false);
       setIsSatellite(false);
     } else {
+      promoted.reload();
+      onChange();
       map.setStyle(STYLES.SATELLITE);
       setIsBuildings(false);
       setIsSatellite(true);
     }
   };
   const handleToggleBuildings = () => {
-    if (!map) { return; }
+    if (!map || isSatellite) { return; }
     if (isBuildings) {
       map.removeLayer('buildings');
       setIsBuildings(false);
@@ -115,7 +128,7 @@ const MapSwicher: React.FC<Props> = props => {
         <Button onClick={handleToggleDark}>
           {isDark ? 'Light' : 'Dark'}
         </Button>
-        <Button onClick={handleToggleBuildings}>
+        <Button onClick={handleToggleBuildings} disable={isSatellite}>
           {isBuildings ? 'Non Buildings' : 'Buildings'}
         </Button>
         <Button onClick={handleToggleSatellite}>
@@ -129,9 +142,9 @@ const MapSwicher: React.FC<Props> = props => {
   );
 };
 
-export const renderMapSwicher = (map: MapboxGL.Map) => {
+export const renderMapSwicher = (map: MapboxGL.Map, promoted: MapboxPromoted, onChange: () => void) => {
   ReactDOM.render(
-    <MapSwicher map={map} />,
+    <MapSwicher map={map} promoted={promoted} onChange={onChange} />,
     document.getElementById('map-type-switcher')
   );
 };

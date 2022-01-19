@@ -103,7 +103,7 @@ const MapExtensions: React.FC<Props> = props => {
   });
 
   return (
-    <Container>
+    <Container id='map-extensions-container'>
       <SwitchIcon isOpening={isOpening} onClick={handleToggle}>
         <Icon type={ICON_TYPE.EXTERNAL_LINK_SQUARE_ALT} width='13px' height='13px' />
       </SwitchIcon>

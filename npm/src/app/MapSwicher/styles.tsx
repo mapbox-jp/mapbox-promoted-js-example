@@ -6,6 +6,9 @@ type SwitchIcon = {
 type Menu = {
   isOpening?: boolean;
 };
+type Button = {
+  disable?: boolean;
+};
 
 export const Container = styled.div`
   display: flex;
@@ -41,7 +44,7 @@ export const Button = styled.span`
   transition: all 0.1s;
   cursor: pointer;
   &:hover {
-    color: #000000;
+    color: ${({ disable }: Button) => disable ? 'rgba(51, 51, 51, 0.4)' : '#000000'};
   }
   & + & {
     margin-left: 5px;
