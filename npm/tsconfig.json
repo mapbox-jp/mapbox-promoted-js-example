@@ -15,6 +15,7 @@
     "typeRoots": ["src/@types", "node_modules/@types"],
     "paths": {
       "app/*":   ["./src/app/*"],
+      "apis/*":  ["./src/apis/*"],
       "utils/*": ["./src/utils/*"]
     },
     "allowSyntheticDefaultImports": true,

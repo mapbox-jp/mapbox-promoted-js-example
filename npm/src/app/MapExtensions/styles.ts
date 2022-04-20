@@ -51,6 +51,17 @@ export const ItemLabel = styled.div`
 export const ItemValue = styled.div`
   width: 50%;
 `;
+export const Textarea = styled.textarea`
+  position: relative;
+  display: block;
+  width: 330px;
+  font-size: 11px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 export const Select = styled.select`
   position: relative;
   display: block;

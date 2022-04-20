@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const handleChangeMapStyle = () => {
     setDate(new Date());
   };
-
+  
   useEffect(() => {
     const { lng, lat, zoom } = INITIAL_MAP_STATE;
     const map = new MapboxGL.Map({
@@ -32,17 +32,18 @@ const App: React.FC = () => {
       center: [lng, lat],
       zoom,
     });
+    
     const promoted = new MapboxPromoted(
       map,
       process.env.ACCESS_TOKEN,
       {
-        // baseUrl: process.env.BASE_URL,
-        // sourceUrl: process.env.SOURCE_URL,
-        // telemetryUrl: process.env.TELEMETRY_URL,
-        // layerSourceId: process.env.LAYER_SOURCE_ID,
-        // debug: true,
+        baseUrl: 'https://mbp.admaptech.info',
+        logUrl: 'https://mbp.admaptech.info',
       }
     );
+    promoted.on('start_session', (t, e) => console.log('start_session', e));
+    promoted.on('update_session', (t, e) => console.log('update_session', e));
+    promoted.on('end_session', (t, e) => console.log('end_session', e));
     map.on('load', () => {
       map.addControl(new MapboxGL.NavigationControl({
         visualizePitch: true,

@@ -27,8 +27,8 @@ export const tileToQuadkey = (x: number, y: number, z: number) => {
 };
 
 export const quadkeyToTile = (quadkey: string) => {
-  let x = 0
-  let y = 0
+  let x = 0;
+  let y = 0;
   let z = quadkey.length;
   for (let i = z; i > 0; i --) {
     let mask = 1 << (i - 1);

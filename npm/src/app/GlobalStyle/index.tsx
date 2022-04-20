@@ -57,17 +57,6 @@ const GlobalStyle = createGlobalStyle`
     min-width: 29px;
     min-height: 29px;
   }
-  .promotion-popup {
-    @media screen and (max-width: 480px) {
-      zoom: 0.9;
-    }
-    @media screen and (min-width: 480px) and (max-width: 1024px) {
-      zoom: 1.0;      
-    }
-    @media screen and (min-width: 1024px) {
-      zoom: 1.0;          
-    }
-  }
 `;
 
 export default GlobalStyle;

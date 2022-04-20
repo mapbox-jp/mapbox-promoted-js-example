@@ -1,7 +1,7 @@
 export const INITIAL_MAP_STATE = {
   lng: 139.7671687688049,
   lat: 35.68116566710953,
-  zoom: 14,
+  zoom: 15,
   pitch: 50,
   bearing: -10,
   antialias: true

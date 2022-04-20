@@ -7,6 +7,7 @@ const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const paths = require('./paths');
@@ -107,6 +108,11 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({ process: { env: envStringified } }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'public/app.js', to: "static/js/app.js" },
+      ],
+    }),
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,

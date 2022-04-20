@@ -67,8 +67,8 @@ const DebugPanel: React.FC<Props> = props => {
     };
     setDate(new Date());
   };
-  const sourcedata = (_type: string, data: any)=> {
-    const tiles = createTiles(map, data.tiles);
+  const sourcedataend = (_type: string)=> {
+    const tiles = createTiles(map, promoted.tiles);
     updateTileBoundaries(map, tiles);
     debugParams = {
       ...debugParams,
@@ -81,14 +81,14 @@ const DebugPanel: React.FC<Props> = props => {
     map.off('mousemove', mousemove);
     map.off('zoomend', zoomend);
     promoted.off('moveend', moveend);
-    promoted.off('sourcedata', sourcedata);
+    promoted.off('sourcedataend', sourcedataend);
   };
   const initilizeEventActions = () => {
     addLayers(map);
     map.on('mousemove', mousemove);
     map.on('zoomend', zoomend);
     promoted.on('moveend', moveend);
-    promoted.on('sourcedata', sourcedata);
+    promoted.on('sourcedataend', sourcedataend);
     const tiles = createTiles(map, promoted.tiles);
     updateTileBoundaries(map, tiles);
   };
