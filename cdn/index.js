@@ -7,8 +7,7 @@ const map = new mapboxgl.Map({
   zoom: 13
 });
 const promoted = new PromotedCore.Promoted(map, token, {
-  baseUrl: 'https://api.mapbox.com',
-  sourceUrl: 'https://mymapbox.s3.ap-northeast-1.amazonaws.com/assets/geojsons/demo2.geojson',
-  telemetryUrl: 'https://events.mapbox.com',
+  baseUrl: 'https://mbp.admaptech.info',
+  logUrl: 'https://mbp.admaptech.info',
   debug: true,
 });

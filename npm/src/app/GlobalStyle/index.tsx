@@ -53,6 +53,10 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     height: 100%;
   }
+  #map-type-switcher, #map-extensions {
+    min-width: 29px;
+    min-height: 29px;
+  }
 `;
 
 export default GlobalStyle;

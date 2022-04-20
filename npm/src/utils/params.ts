@@ -1,3 +1,12 @@
+export const INITIAL_MAP_STATE = {
+  lng: 139.7671687688049,
+  lat: 35.68116566710953,
+  zoom: 15,
+  pitch: 50,
+  bearing: -10,
+  antialias: true
+};
+
 export const STYLES = {
   STREET: 'mapbox://styles/mapbox/streets-v11',
   OUTDOORS: 'mapbox://styles/mapbox/outdoors-v11',
