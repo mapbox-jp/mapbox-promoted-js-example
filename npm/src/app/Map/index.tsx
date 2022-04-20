@@ -37,8 +37,8 @@ const App: React.FC = () => {
       map,
       process.env.ACCESS_TOKEN,
       {
-        baseUrl: 'https://mbp.admaptech.info',
-        logUrl: 'https://mbp.admaptech.info',
+        baseUrl: process.env.BASE_URL,
+        logUrl: process.env.LOG_URL,
       }
     );
     promoted.on('start_session', (t, e) => console.log('start_session', e));
