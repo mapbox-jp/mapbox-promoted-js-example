@@ -25,4 +25,3 @@ export const ItemValue = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
-

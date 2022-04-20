@@ -51,32 +51,3 @@ export const ItemLabel = styled.div`
 export const ItemValue = styled.div`
   width: 50%;
 `;
-export const Textarea = styled.textarea`
-  position: relative;
-  display: block;
-  width: 330px;
-  font-size: 11px;
-  border: 1px solid #dddddd;
-  border-radius: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-export const Select = styled.select`
-  position: relative;
-  display: block;
-  width: 100%;
-  padding: 6px 3px;
-  font-size: 11px;
-  line-height: 1.5715;
-  color: #333333;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
-  white-space: nowrap;
-  user-select: none;
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  border-radius: 5px;
-  cursor: pointer;
-  outline: 0;
-`;
-export const Option = styled.option``;
