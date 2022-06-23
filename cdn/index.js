@@ -1,4 +1,4 @@
-const token = 'pk.eyJ1IjoidGstbWFwYm94IiwiYSI6ImNrcnR4eHcwazB5Ymoyb3BmOTljMDgzMGUifQ.9XhhlYHW0mEnsC9Z3j_XmA';
+const token = '';
 mapboxgl.accessToken = token;
 const map = new mapboxgl.Map({
   container: 'app',
@@ -7,7 +7,7 @@ const map = new mapboxgl.Map({
   zoom: 13
 });
 const promoted = new PromotedCore.Promoted(map, token, {
-  baseUrl: 'https://mbp.admaptech.info',
-  logUrl: 'https://mbp.admaptech.info',
+  baseUrl: '',
+  logUrl: '',
   debug: true,
 });
