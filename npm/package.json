@@ -9,11 +9,12 @@
   "scripts": {
     "lint:fix": "eslint --fix ./src",
     "lint": "eslint ./src",
-    "start": "cross-env DOT_ENV=\"development\" NODE_ENV=\"production\" PUBLIC_PATH=\"/\" webpack-cli serve --mode development --open --config ./config/webpack.config.js --hot --inline",
+    "start": "cross-env DOT_ENV=\"local\" NODE_ENV=\"production\" PUBLIC_PATH=\"/\" webpack-cli serve --mode development --open --config ./config/webpack.config.js --hot --inline",
+    "start:dev": "cross-env DOT_ENV=\"development\" NODE_ENV=\"production\" PUBLIC_PATH=\"/\" webpack-cli serve --mode development --open --config ./config/webpack.config.js --hot --inline",
     "start:stg": "cross-env DOT_ENV=\"staging\" NODE_ENV=\"production\" PUBLIC_PATH=\"/\" webpack-cli serve --mode development --open --config ./config/webpack.config.js --hot --inline",
     "start:prod": "cross-env DOT_ENV=\"production\" NODE_ENV=\"production\" PUBLIC_PATH=\"/\" webpack-cli serve --mode development --open --config ./config/webpack.config.js --hot --inline",
     "watch": "cross-env DOT_ENV=\"development\" NODE_ENV=\"development\" webpack --watch --config ./config/webpack.config.js",
-    "build": "cross-env DOT_ENV=\"staging\" NODE_ENV=\"production\" PUBLIC_PATH=\"./\" webpack --config ./config/webpack.config.js --mode production",
+    "build": "cross-env DOT_ENV=\"local\" NODE_ENV=\"local\" PUBLIC_PATH=\"./\" webpack --config ./config/webpack.config.js --mode production",
     "build:dev": "cross-env DOT_ENV=\"development\" NODE_ENV=\"development\" PUBLIC_PATH=\"./\" webpack --config ./config/webpack.config.js --mode development",
     "build:stg": "cross-env DOT_ENV=\"staging\" NODE_ENV=\"staging\" PUBLIC_PATH=\"./\" webpack --config ./config/webpack.config.js --mode development",
     "build:prod": "cross-env DOT_ENV=\"production\" NODE_ENV=\"staging\" PUBLIC_PATH=\"./\" webpack --config ./config/webpack.config.js --mode development"
