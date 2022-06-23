@@ -1,9 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MapboxGL from 'mapbox-gl';
 import { Promoted as MapboxPromoted } from 'mapbox-promoted-js';
-import { MapTypeController, renderMapSwicher } from 'app/MapSwicher';
-import { MapExtensionsController, renderMapExtensions } from 'app/MapExtensions';
-import DebugPanel from 'app/DebugPanel';
 import { INITIAL_MAP_STATE, STYLES } from 'utils/params';
 import { Container } from './styles';
 
@@ -12,17 +9,6 @@ MapboxGL.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
 const App: React.FC = () => {
   const ref = useRef(null);
-  const mapRef = useRef<MapboxGL.Map>();
-  const promotedRef = useRef<MapboxPromoted>();
-  const [isDebugging, setIsDebugging] = useState(false);
-  const [date, setDate] = useState<Date>();
-
-  const handleToggleDebugging = (value: boolean) => {
-    setIsDebugging(value);
-  };
-  const handleChangeMapStyle = () => {
-    setDate(new Date());
-  };
   
   useEffect(() => {
     const { lng, lat, zoom } = INITIAL_MAP_STATE;
@@ -44,33 +30,11 @@ const App: React.FC = () => {
     promoted.on('start_session', (t, e) => console.log('start_session', e));
     promoted.on('update_session', (t, e) => console.log('update_session', e));
     promoted.on('end_session', (t, e) => console.log('end_session', e));
-    map.on('load', () => {
-      map.addControl(new MapboxGL.NavigationControl({
-        visualizePitch: true,
-      }));
-      map.addControl(new MapboxGL.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true,
-      }));
-      map.addControl(new MapTypeController());    
-      map.addControl(new MapExtensionsController());    
-      renderMapSwicher(map, promoted, handleChangeMapStyle);
-      renderMapExtensions(map, promoted, handleToggleDebugging);
-    });
-    mapRef.current = map;
-    promotedRef.current = promoted;
   return () => map.remove();
   }, []);
 
   return (
-    <>
-      <Container ref={ref} />
-      {isDebugging && mapRef.current && promotedRef.current && (
-        <DebugPanel map={mapRef.current} promoted={promotedRef.current} reload={date} />
-      )}
-    </>
+    <Container ref={ref} />
   );
 };
 

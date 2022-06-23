@@ -6,7 +6,6 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -15,7 +14,6 @@ const getClientEnvironment = require('./env');
 
 const envParams = getClientEnvironment();
 const envStringified = envParams.envStringified;
-// const __DEV__ = process.env.NODE_ENV === 'development';
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -28,32 +26,6 @@ module.exports = {
     filename: 'static/js/[name].[hash:8].js',
     chunkFilename: 'static/js/[name].[hash:8].chunk.js',
     publicPath: process.env.PUBLIC_PATH || './',
-  },
-  optimization: {
-    // minimizer: [
-    //   new TerserPlugin({
-    //     terserOptions: {
-    //       parse: {
-    //         ecma: 8
-    //       },
-    //       compress: {
-    //         ecma: 5,
-    //         warnings: false,
-    //         comparisons: false,
-    //         drop_console: false
-    //       },
-    //       mangle: {
-    //         safari10: true
-    //       },
-    //       output: {
-    //         ecma: 5,
-    //         comments: false,
-    //         ascii_only: true
-    //       }
-    //     },
-    //     parallel: true
-    //   })
-    // ]
   },
   resolve: {
     modules: ['node_modules'],
