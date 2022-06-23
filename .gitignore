@@ -2,6 +2,7 @@
 
 .DS_Store
 .yarn-error.log
+.env
 .env.development
 .env.staging
 .env.production
