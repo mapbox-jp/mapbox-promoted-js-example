@@ -7,7 +7,7 @@ delete require.cache[require.resolve('./paths')];
 
 // .env の読み込み
 const defaultDotenvFile = paths.dotenv;
-const stageDotenvFile = `${paths.dotenv}.${process.env.DOT_ENV}`;
+const stageDotenvFile = `${paths.dotenv}${process.env.DOT_ENV !== 'local' ? `.${process.env.DOT_ENV}` : ''}`;
 const dotenvFile = fs.existsSync(stageDotenvFile) ? stageDotenvFile :
   fs.existsSync(defaultDotenvFile) ? defaultDotenvFile : null;
   
