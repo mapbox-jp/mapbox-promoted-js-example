@@ -18,7 +18,6 @@ const App: React.FC = () => {
       center: [lng, lat],
       zoom,
     });
-    
     const promoted = new MapboxPromoted(
       map,
       process.env.ACCESS_TOKEN,
