@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import MapboxGL from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import { lngToTile, latToTile, tileToQuadkey, getTileCornerCoordinates, tileToCoordinate } from 'utils/geometry';
-import { initialDebugParams, createTiles, addLayers, removeLayers, updateTileBoundaries } from './helpers';
+import { initialDebugParams, addLayers, removeLayers, updateTileBoundaries } from './helpers';
 import { Container, Item, ItemLabel, ItemValue } from './styles';
 import { Promoted } from 'mapbox-promoted-js';
 
-MapboxGL.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-(MapboxGL as unknown as { workerClass: string }).workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
+// (mapboxgl as unknown as { workerClass: string }).workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 type Props = {
-  map: MapboxGL.Map;
+  map: mapboxgl.Map;
   promoted: Promoted;
   reload?: Date;
 };
@@ -22,11 +22,9 @@ const DebugPanel: React.FC<Props> = props => {
 
   const [_date, setDate] = useState(new Date());
   const mousemove = (event: any) => {
-    const lng = event.lngLat.lng;
-    const lat = event.lngLat.lat;
     const zoom = Math.floor(map.getZoom());
-    const x = lngToTile(lng, zoom);
-    const y = latToTile(lat, zoom);
+    const x = lngToTile(event.lngLat.lng, zoom);
+    const y = latToTile(event.lngLat.lat, zoom);
     const tile = {
       x,
       y,
@@ -42,8 +40,7 @@ const DebugPanel: React.FC<Props> = props => {
     setDate(new Date());
   };
   const zoomend = (_event: any) => {
-    const tiles = createTiles(map, promoted.tiles);
-    updateTileBoundaries(map, tiles);
+    updateTileBoundaries(map);
     debugParams = {
       ...debugParams,
       tiles
@@ -68,8 +65,7 @@ const DebugPanel: React.FC<Props> = props => {
     setDate(new Date());
   };
   const sourcedataend = (_type: string)=> {
-    const tiles = createTiles(map, promoted.tiles);
-    updateTileBoundaries(map, tiles);
+    updateTileBoundaries(map);
     debugParams = {
       ...debugParams,
       tiles
@@ -89,8 +85,7 @@ const DebugPanel: React.FC<Props> = props => {
     map.on('zoomend', zoomend);
     promoted.on('moveend', moveend);
     promoted.on('sourcedataend', sourcedataend);
-    const tiles = createTiles(map, promoted.tiles);
-    updateTileBoundaries(map, tiles);
+    updateTileBoundaries(map);
   };
 
   useEffect(() => {

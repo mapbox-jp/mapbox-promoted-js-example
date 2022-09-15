@@ -1,9 +1,35 @@
+import mapboxgl from "mapbox-gl";
+
 export type Coordinate = { lng: number; lat: number };
 export type Tile = {
-  corners: Coordinate[];
+  corners?: Coordinate[];
   x: number;
   y: number;
   z: number;
+};
+export type Bound = {
+  ne: Coordinate;
+  nw: Coordinate;
+  se: Coordinate;
+  sw: Coordinate;
+};
+export type TileBound = {
+  ne: Tile;
+  nw: Tile;
+  se: Tile;
+  sw: Tile;
+};
+
+export const getBounds = (map: mapboxgl.Map): Bound => {
+  const bounds = map.getBounds();
+  const ne = bounds.getNorthEast();
+  const sw = bounds.getSouthWest();
+  return {
+    ne: { lng: ne.lng * 60 * 60 * 1000 / 60 / 60 / 1000, lat: ne.lat * 60 * 60 * 1000 / 60 / 60 / 1000 },
+    nw: { lng: ne.lng * 60 * 60 * 1000 / 60 / 60 / 1000, lat: sw.lat * 60 * 60 * 1000 / 60 / 60 / 1000 },
+    se: { lng: sw.lng * 60 * 60 * 1000 / 60 / 60 / 1000, lat: ne.lat * 60 * 60 * 1000 / 60 / 60 / 1000 },
+    sw: { lng: sw.lng * 60 * 60 * 1000 / 60 / 60 / 1000, lat: sw.lat * 60 * 60 * 1000 / 60 / 60 / 1000 },
+  }
 };
 
 export const lngToTile = (lng: number, z: number) => {
@@ -12,6 +38,12 @@ export const lngToTile = (lng: number, z: number) => {
 
 export const latToTile = (lat: number, z: number) => {
   return Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, z));
+};
+
+export const coordianteToTile = (lng: number, lat: number, z: number): Tile => {
+  const x = lngToTile(lng, z);
+  const y = latToTile(lat, z);
+  return { x, y, z };
 };
 
 export const tileToQuadkey = (x: number, y: number, z: number) => {
@@ -43,6 +75,17 @@ export const quadkeyToTile = (quadkey: string) => {
   return [x, y, z];
 };
 
+export const getTileBound = (x: number, y: number, z: number): Bound => {
+  const ne = tileToCoordinate(x, y, z);
+  const sw = tileToCoordinate(x + 1, y + 1, z);
+  return {
+    ne: { lng: ne.lng, lat: ne.lat },
+    nw: { lng: ne.lng, lat: sw.lat },
+    se: { lng: sw.lng, lat: ne.lat },
+    sw: { lng: sw.lng, lat: sw.lat },
+  };
+};
+
 export const tileToCenterCoordinate = (x: number, y: number, z: number) => {
   const currentTileCoordinate = tileToCoordinate(x, y, z);
   const nextTileCoordinate = tileToCoordinate(x + 1, y + 1, z);
@@ -50,6 +93,52 @@ export const tileToCenterCoordinate = (x: number, y: number, z: number) => {
     lng: currentTileCoordinate.lng + (nextTileCoordinate.lng - currentTileCoordinate.lng) / 2,
     lat: currentTileCoordinate.lat + (nextTileCoordinate.lat - currentTileCoordinate.lat) / 2
   };
+};
+
+export const getCornerTiles = (sw: Coordinate, ne: Coordinate, zoomLevel: number): TileBound => {
+  const z = Math.floor(zoomLevel);
+  const tsw = coordianteToTile(sw.lng, sw.lat, z);
+  const tne = coordianteToTile(ne.lng, ne.lat, z);
+  return {
+    ne: { x: tne.x, y: tne.y, z: zoomLevel },
+    nw: { x: tne.x, y: tsw.y, z: zoomLevel },
+    se: { x: tsw.x, y: tne.y, z: zoomLevel },
+    sw: { x: tsw.x, y: tsw.y, z: zoomLevel },
+  };
+};
+
+export const getQuadkeysOnBound = (sw: Coordinate, ne: Coordinate, zoomLevel: number) => {
+  const tileBound = getCornerTiles(ne, sw, zoomLevel);
+  const z = Math.floor(zoomLevel);
+  const quadkeys = [];
+  const tiles = [];
+  for (let x = tileBound.ne.x; x <= tileBound.sw.x; x ++) {
+    for (let y = tileBound.sw.y; y <= tileBound.ne.y; y ++) {
+      const quadkey = tileToQuadkey(x, y, z);
+      quadkeys.push(quadkey);
+      tiles.push({ x, y, z, quadkey });
+    }
+  }
+  return {
+    quadkeys,
+    tiles,
+  };
+};
+
+export const createTiles = (map: mapboxgl.Map, quadkeys: string[]) => {
+  return quadkeys.map((quadkey: string) => {
+    const tile = quadkeyToTile(quadkey);
+    const x = tile[0], y = tile[1], z = tile[2];
+    const targetCoordinate = tileToCenterCoordinate(x, y, z);
+    const corners = getTileCornerCoordinates(targetCoordinate.lng, targetCoordinate.lat, z);
+    return {
+      x,
+      y,
+      z,
+      quadkey,
+      corners,
+    }
+  });
 };
 
 export const tileToCoordinate = (x: number, y: number, z: number) => {

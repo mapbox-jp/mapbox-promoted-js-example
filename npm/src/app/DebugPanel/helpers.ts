@@ -1,5 +1,5 @@
-import MapboxGL, { GeoJSONSource } from 'mapbox-gl';
-import { Tile, Coordinate, tileToCenterCoordinate, getTileCornerCoordinates } from 'utils/geometry';
+import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
+import { Tile, Coordinate, getBounds, getQuadkeysOnBound, createTiles } from 'utils/geometry';
 
 export type DebugParams = {
   coordinate: {
@@ -37,26 +37,12 @@ export const initialDebugParams: DebugParams = {
   },
 };
 
-export const INITIAL_GEOJSON: MapboxGL.GeoJSONSourceRaw = {
+export const INITIAL_GEOJSON: mapboxgl.GeoJSONSourceRaw = {
   type: 'geojson',
   data: {
     type: 'FeatureCollection',
     features: []
   }
-};
-
-export const createTiles = (map: MapboxGL.Map, tiles: any) => {
-  return tiles.filter(({ z }: any) => z === Math.floor(map.getZoom())).map(({ x, y, z, quadkey }: any) => {
-    const targetCoordinate = tileToCenterCoordinate(x, y, z);
-    const corners = getTileCornerCoordinates(targetCoordinate.lng, targetCoordinate.lat, z);
-    return {
-      x,
-      y,
-      z,
-      quadkey,
-      corners,
-    }
-  });
 };
 
 const createTileBoundaryFeatureCollection = (tiles: Tile[]): GeoJSON.FeatureCollection<GeoJSON.Geometry> => ({
@@ -66,7 +52,7 @@ const createTileBoundaryFeatureCollection = (tiles: Tile[]): GeoJSON.FeatureColl
     properties: {},
     geometry: {
       type: 'LineString',
-      coordinates: tile.corners.map((corner: Coordinate) => ([corner.lng, corner.lat]))
+      coordinates: tile.corners ? tile.corners.map((corner: Coordinate) => ([corner.lng, corner.lat])) : [],
     }
   }))
 });
@@ -81,12 +67,12 @@ const createTileBoundaryLabelFeatureCollection = (tiles: Tile[]): GeoJSON.Featur
     },
     geometry: {
       type: 'Point',
-      coordinates: [tile.corners[0].lng, tile.corners[0].lat]
+      coordinates: [tile.corners ? tile.corners[0].lng : 0, tile.corners ? tile.corners[0].lat : 0],
     }
   }))
 });
 
-export const addLayers = (map: MapboxGL.Map) => {
+export const addLayers = (map: mapboxgl.Map) => {
   const boundariesSource = map.getSource('tile-boundaries-source');
   const boundariesSymbolSource = map.getSource('tile-boundaries-symbol-source');
   const boundariesLayer = map.getLayer('tile-boundaries-layer');
@@ -114,7 +100,7 @@ export const addLayers = (map: MapboxGL.Map) => {
   });
 };
 
-export const removeLayers = (map: MapboxGL.Map) => {
+export const removeLayers = (map: mapboxgl.Map) => {
   const boundariesLayer = map.getLayer('tile-boundaries-layer');
   const boundariesSource = map.getSource('tile-boundaries-source');
   const boundariesSymbolLayer = map.getLayer('tile-boundaries-symbol-layer');
@@ -125,7 +111,10 @@ export const removeLayers = (map: MapboxGL.Map) => {
   boundariesSymbolSource && map.removeSource('tile-boundaries-symbol-source');
 };
 
-export const updateTileBoundaries = (map: MapboxGL.Map, tiles: Tile[]) => {
+export const updateTileBoundaries = (map: mapboxgl.Map) => {
+  const { sw, ne } = getBounds(map);
+  const { quadkeys } = getQuadkeysOnBound(sw, ne, map.getZoom());
+  const tiles = createTiles(map, quadkeys);
   const boundariesSource = map.getSource('tile-boundaries-source');
   const boundariesSymbolSource = map.getSource('tile-boundaries-symbol-source');
   const updateBoundaries = createTileBoundaryFeatureCollection(tiles);
