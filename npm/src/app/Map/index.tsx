@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { Promoted as MapboxPromoted } from 'mapbox-promoted-js';
+import { Promoted } from 'mapbox-promoted-js';
+import PromotedMapbox from 'promoted-mapbox-plugin-js';
 import { MapTypeController, renderMapSwicher } from 'app/MapSwicher';
 import { MapExtensionsController, renderMapExtensions } from 'app/MapExtensions';
 import DebugPanel from 'app/DebugPanel';
@@ -32,8 +33,9 @@ const App: React.FC = () => {
       center: [lng, lat],
       zoom,
     });
-    const promoted = new MapboxPromoted(
-      map,
+    const promotedMapbox = new PromotedMapbox(map);
+    const promoted = new Promoted(
+      promotedMapbox,
       process.env.ACCESS_TOKEN,
       {
         baseUrl: process.env.BASE_URL,
