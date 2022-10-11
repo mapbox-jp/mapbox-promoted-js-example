@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { Promoted } from 'mapbox-promoted-js';
-import PromotedMapbox from 'promoted-mapbox-plugin-js';
+import { Plugin } from 'promoted-mapbox-plugin-js';
 import { MapTypeController, renderMapSwicher } from 'app/MapSwicher';
 import { MapExtensionsController, renderMapExtensions } from 'app/MapExtensions';
 import DebugPanel from 'app/DebugPanel';
@@ -14,7 +14,7 @@ mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 const App: React.FC = () => {
   const ref = useRef(null);
   const mapRef = useRef<mapboxgl.Map>();
-  const promotedRef = useRef<MapboxPromoted>();
+  const promotedRef = useRef<any>();
   const [isDebugging, setIsDebugging] = useState(false);
   const [date, setDate] = useState<Date>();
 
@@ -24,7 +24,7 @@ const App: React.FC = () => {
   const handleChangeMapStyle = () => {
     setDate(new Date());
   };
-  
+
   useEffect(() => {
     const { lng, lat, zoom } = INITIAL_MAP_STATE;
     const map = new mapboxgl.Map({
@@ -33,15 +33,14 @@ const App: React.FC = () => {
       center: [lng, lat],
       zoom,
     });
-    const promotedMapbox = new PromotedMapbox(map);
-    const promoted = new Promoted(
-      promotedMapbox,
-      process.env.ACCESS_TOKEN,
-      {
-        baseUrl: process.env.BASE_URL,
-        logUrl: process.env.LOG_URL,
-      }
-    );
+    const promotedMapbox = new Plugin(map);
+    const promoted = new Promoted({
+      map: promotedMapbox,
+      accessToken: process.env.ACCESS_TOKEN,
+      container: ref.current as any,
+      baseUrl: process.env.BASE_URL,
+      logUrl: process.env.LOG_URL,
+    });
     promoted.on('start_session', (t, e) => console.log('start_session', e));
     promoted.on('update_session', (t, e) => console.log('update_session', e));
     promoted.on('end_session', (t, e) => console.log('end_session', e));
