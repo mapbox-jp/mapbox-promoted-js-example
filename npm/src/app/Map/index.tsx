@@ -5,6 +5,7 @@ import { Plugin } from 'promoted-mapbox-plugin-js';
 import { MapTypeController, renderMapSwicher } from 'app/MapSwicher';
 import { MapExtensionsController, renderMapExtensions } from 'app/MapExtensions';
 import DebugPanel from 'app/DebugPanel';
+import SideMenu from 'app/SideMenu';
 import { INITIAL_MAP_STATE, STYLES } from 'utils/params';
 import { Container } from './styles';
 
@@ -36,14 +37,44 @@ const App: React.FC = () => {
     const promotedMapbox = new Plugin(map);
     const promoted = new Promoted({
       map: promotedMapbox,
+      // map,
       accessToken: process.env.ACCESS_TOKEN,
       container: ref.current as any,
+      baseColor: '#026400',
       baseUrl: process.env.BASE_URL,
       logUrl: process.env.LOG_URL,
+      scaleIcon: 2,
+      sideCard: true,
+      mediaModal: true,
     });
-    promoted.on('start_session', (t, e) => console.log('start_session', e));
-    promoted.on('update_session', (t, e) => console.log('update_session', e));
-    promoted.on('end_session', (t, e) => console.log('end_session', e));
+    promoted.on('click_pin', (t, e) => {
+      const feature = e.data.features[0];
+      console.log(feature);
+      window.feature = feature;
+      // promoted.renderPromotionSideCardInnerElement('#sidemenu', feature)
+      // console.log(t, e.data.feature);
+    });
+    // promoted.on('show_side_card', (t, e) => {
+    //   console.log(t, e);
+    //   window.feature = e.data.feature;
+    //   // insertNavitimeActions();
+    // });
+    // promoted.on('open_side_card', (t, e) => {
+    //   console.log(t, e);
+    //   window.feature = e.data.feature;
+    //   // insertNavitimeActions();
+    // });
+    // promoted.on('close_side_card', (t, e) => {
+    //   console.log(t, e);
+    //   window.feature = e.data.feature;
+    //   // insertNavitimeActions();
+    // });
+    promoted.on('click_side_card', (type, event) => {
+      console.log(type, event);
+    });
+    // promoted.on('start_session', (t, e) => console.log('start_session', e));
+    // promoted.on('update_session', (t, e) => console.log('update_session', e));
+    // promoted.on('end_session', (t, e) => console.log('end_session', e));
     map.on('load', () => {
       map.addControl(new mapboxgl.NavigationControl({
         visualizePitch: true,
@@ -61,7 +92,9 @@ const App: React.FC = () => {
     });
     mapRef.current = map;
     promotedRef.current = promoted;
-  return () => map.remove();
+    window.map = map;
+    window.promoted = promoted;
+    return () => map.remove();
   }, []);
 
   return (
@@ -70,6 +103,7 @@ const App: React.FC = () => {
       {isDebugging && mapRef.current && promotedRef.current && (
         <DebugPanel map={mapRef.current} promoted={promotedRef.current} reload={date} />
       )}
+      {/* <SideMenu /> */}
     </>
   );
 };
