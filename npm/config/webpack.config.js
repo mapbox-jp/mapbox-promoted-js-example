@@ -82,8 +82,11 @@ module.exports = {
     new webpack.DefinePlugin({ process: { env: envStringified } }),
     new CopyPlugin({
       patterns: [
-        { from: 'public/app.js', to: "static/js/app.js" },
-      ],
+        {
+          from: 'node_modules/mapbox-promoted-js/lib/app/browser/index.js',
+          to: 'static/js/app.js'
+        }
+      ]
     }),
     new HtmlWebpackPlugin({
       inject: true,

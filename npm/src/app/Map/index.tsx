@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import MapboxGL from 'mapbox-gl';
-import { Promoted as MapboxPromoted } from 'mapbox-promoted-js';
+import { Promoted } from 'mapbox-promoted-js';
 import { INITIAL_MAP_STATE, STYLES } from 'utils/params';
 import { Container } from './styles';
 
@@ -18,19 +18,22 @@ const App: React.FC = () => {
       center: [lng, lat],
       zoom,
     });
-    
-    const promoted = new MapboxPromoted(
+    const promoted = new Promoted({
       map,
-      process.env.ACCESS_TOKEN,
-      {
-        baseUrl: process.env.BASE_URL,
-        logUrl: process.env.LOG_URL,
-      }
-    );
+      accessToken: process.env.ACCESS_TOKEN,
+      container: ref.current as any,
+      baseColor: '#026400',
+      baseUrl: process.env.BASE_URL,
+      logUrl: process.env.LOG_URL,
+      scaleIcon: 2,
+      sideCard: true,
+      mediaModal: true,
+    });
+    promoted.on('click_pin', (t, e) => console.log('click_pin', e));
     promoted.on('start_session', (t, e) => console.log('start_session', e));
     promoted.on('update_session', (t, e) => console.log('update_session', e));
     promoted.on('end_session', (t, e) => console.log('end_session', e));
-  return () => map.remove();
+    return () => map.remove();
   }, []);
 
   return (
