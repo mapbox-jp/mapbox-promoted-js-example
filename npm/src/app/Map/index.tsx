@@ -30,8 +30,6 @@ const App: React.FC = () => {
     });
     promoted.on('click_pin', (t, e) => {
       const feature = e.data.features[0];
-      console.log(feature);
-      console.log(renderPromotionSideCardInnerElement);
       window.renderPromotionSideCardInnerElement(
         document.querySelector('#sidemenu'),
         feature,
