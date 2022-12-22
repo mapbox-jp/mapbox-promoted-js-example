@@ -6,6 +6,7 @@ import { createBrowserHistory } from 'history';
 import GlobalStyle from './app/GlobalStyle';
 // Components
 import App from './app/Map';
+import './styles.scss';
 
 const history = createBrowserHistory();
 

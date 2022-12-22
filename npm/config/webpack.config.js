@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
@@ -17,12 +18,12 @@ const envStringified = envParams.envStringified;
 
 module.exports = {
   mode: process.env.NODE_ENV,
-  entry: [
-    paths.appIndexJs,
-  ],
+  entry: {
+    app: paths.appIndexJs,
+    custom: 'src/custom.tsx',
+  },
   target: ['web', 'es5'],
   output: {
-    path: paths.appBuild,
     filename: 'static/js/[name].[hash:8].js',
     chunkFilename: 'static/js/[name].[hash:8].chunk.js',
     publicPath: process.env.PUBLIC_PATH || './',
@@ -61,6 +62,20 @@ module.exports = {
             ]
           },
           {
+            test: /\.(css|sass|scss)/,
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader
+              },
+              {
+                loader: 'css-loader'
+              },
+              {
+                loader: 'sass-loader'
+              }
+            ]
+          },
+          {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
             loader: require.resolve('file-loader'),
             options: {
@@ -79,6 +94,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin(),
     new webpack.DefinePlugin({ process: { env: envStringified } }),
     new CopyPlugin({
       patterns: [
