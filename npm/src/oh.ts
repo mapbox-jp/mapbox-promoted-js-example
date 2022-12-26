@@ -41,8 +41,6 @@ export const parseBusinessHours = (
 
 export default class OpeningHours {
   private _openingHours: { [key: string]: string[]; };
-	private _alwaysOpen?: boolean;
-	private _alwaysClosed?: boolean;
 
 	constructor(input: string) {
 		this._openingHours = {
@@ -57,14 +55,6 @@ export default class OpeningHours {
 		};
 		this.parse(input);
 	}
-
-  get alwaysOpen() {
-    return this._alwaysOpen;
-  }
-
-  get alwaysClosed() {
-    return this._alwaysClosed;
-  }
 
 	/**
 	 * Parses the input and creates openingHours Object
@@ -216,24 +206,6 @@ export default class OpeningHours {
 		return false;
 	}
 
-	/**
-	 * Compares to timestrings e.g. '18:00'
-	 * if time1 > time2 -> 1
-	 * if time1 < time2 -> -1
-	 * if time1 == time2 -> 0
-	 */
-	private compareTime(time1: string, time2: string) {
-		const date1 = Number(time1.replace(':', ''));
-		const date2 = Number(time2.replace(':', ''));
-		if (date1 > date2) {
-			return 1;
-		} else if (date1 < date2) {
-			return -1;
-		} else {
-			return 0;
-		}
-	}
-
 	public getTable() {
 		return this._openingHours;
 	}
@@ -264,35 +236,5 @@ export default class OpeningHours {
 			}
 		});
 		return intervals;
-	}
-
-	public isOpen(date?: Date): boolean {
-		if (typeof this._openingHours === 'boolean') {
-			return this._openingHours;
-		}
-		date = date || new Date();
-		const testDay = date.getDay();
-		const testTime = `${date.getHours()}:${date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes()}`;
-		let i = 0;
-		let times: string[] = [];
-		for (let key in this._openingHours) {
-			if (i == testDay) {
-				times = this._openingHours[key];
-			}
-			i++;
-		}
-		let isOpen = false
-		times.some(time => {
-			const timeData = time.replace(/\+$/, '-24:00').split('-')
-			if (
-				(this.compareTime(testTime, timeData[0]) != -1) &&
-				(this.compareTime(timeData[1], testTime) != -1)
-			) {
-				isOpen = true;
-				return true;
-			}
-      return false;
-		});
-		return isOpen;
 	}
 }
