@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import MapboxGL from 'mapbox-gl';
-import { Promoted } from 'mapbox-promoted-js';
+import Promoted, { Feature } from 'mapbox-promoted-js';
 import { INITIAL_MAP_STATE, STYLES } from 'utils/params';
-import { Container } from './styles';
+import { Container, SideMenu } from './styles';
 
 MapboxGL.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 (MapboxGL as unknown as { workerClass: string }).workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
@@ -29,7 +29,18 @@ const App: React.FC = () => {
       sideCard: true,
       mediaModal: true,
     });
-    promoted.on('click_pin', (t, e) => console.log('click_pin', e));
+    promoted.on('click_pin', (_type: any, event: any) => {
+      const feature = (event.data as any).features[0] as Feature;
+      const targetElement = document.querySelector('#sidemenu');
+      if (!targetElement) { return; }
+      promoted.render(
+        targetElement as HTMLElement,
+        feature,
+        (type: string, feature: Feature, profileItems?: Feature.ProfileItems) => {
+          console.log('onclcik', type, feature, profileItems);
+        },
+      );
+    });
     promoted.on('start_session', (t, e) => console.log('start_session', e));
     promoted.on('update_session', (t, e) => console.log('update_session', e));
     promoted.on('end_session', (t, e) => console.log('end_session', e));
@@ -37,7 +48,10 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Container ref={ref} />
+    <>
+      <Container ref={ref} />
+      <SideMenu id='sidemenu' />
+    </>
   );
 };
 
